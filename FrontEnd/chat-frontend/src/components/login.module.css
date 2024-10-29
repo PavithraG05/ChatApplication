@@ -1,0 +1,63 @@
+.loginContainer{
+    max-width: 400px;
+    max-height: 850px;
+    margin: 50px auto;
+    /* margin-bottom: 50px; */
+    /* padding: 30px; */
+    /* border-radius: 5px; */
+    background-color: #F0F0F0;
+}
+
+.container{
+    border-radius: 0px !important;
+    border: 1px solid rgba(0, 0, 0, 0.26) !important;
+}
+
+.formContainer{
+    padding:30px;
+    border-radius: 5px;
+}
+
+.bgColor{
+    background-color:rgb(245, 202, 10) !important;
+    color: black !important;
+    border-radius: 0px !important;
+}
+
+.errorFormField {
+    color: red;
+    font-size: 14px;
+    padding: 5px 0px;
+}
+
+.loginBtn{
+    width: 320px;
+    background-color: rgba(137, 43, 226, 0.788) !important;
+}
+
+.eyeFill {
+    margin-left: -45px;
+    margin-top: -30px;
+    position: relative;
+    z-index: 2;
+    padding-right: 15px;
+    float: right;
+    cursor: pointer;
+}
+
+.fieldBorderColor {
+    border: 1px solid #dc3545 !important;
+}
+
+.loginTitle{
+    font-size: 17px;
+    text-align: center;
+    top:10px;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.registerLink{
+    font-size: 14px;
+    text-align: center;
+}
