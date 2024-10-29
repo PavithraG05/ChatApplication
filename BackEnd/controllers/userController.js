@@ -1,54 +1,58 @@
 const userModel = require('../models/userModel')
 const generateToken = require("../config/generateToken")
+const asyncErrorHandler = require('../utils/asyncErrorHandler')
+const CustomError = require('../utils/CustomError')
 
+const registerUser = asyncErrorHandler(async(req, res, next) => {
+   
+    const {name, email, password, profile} =  req.body;
+    let errorMessage = '';
 
-const registerUser = async(req,res) => {
-    try{
-        const {name, email, password, profile} =  req.body;
+    if(!name || !email || !password){
+        errorMessage = `Missing one or more required fields`
+        const err = new CustomError(400, errorMessage);
+        return next(err);
+    }
+    
+    const userExists = await userModel.findOne({email});
+    if(userExists){
+        errorMessage = `error: "User already exists"`;
+        const err = new CustomError(400, errorMessage);
+        return next(err);
+    }
 
-        if(!name || !email || !password){
-            res.status(400).json(`error: "Missing data, can't process: one or more book properties missing."`)
-            // throw new Error("Missing data fields")
-            return
-        }
-        
-        const userExists = await userModel.findOne({email});
-        if(userExists){
-            res.status(400).json(`error: "User already exists"`)
-            // throw new Error("user already exists")
-            return
-        }
+    const user = await userModel.create({
+        name,
+        email,
+        password,
+        profile,
+    });
 
-        const user = await userModel.create({
-            name,
-            email,
-            password,
-            profile,
+    if(user){
+        res.status(201).json({
+            _id : user._id,
+            name: user.name,
+            email:user.email, 
+            profile:user.profile,
+            token: generateToken(user._id),
         });
-
-        if(user){
-            res.status(201).json({
-                _id : user._id,
-                name: user.name,
-                email:user.email, 
-                profile:user.profile,
-                token: generateToken(user._id),
-            });
-        }
-        else{
-            res.status.status(400).json(`error:"Failed to create user"`);
-        }
-
     }
-    catch(error){
-        console.log(error);
-        res.status(500).json({ error: error.message })
+    else{
+        errorMessage = `error:"Failed to create user"`;
+        const err = new CustomError(400, errorMessage);
+        return next(err);
     }
-}
 
-const authUser=async(req,res)=>{
+})
+
+const authUser = asyncErrorHandler( async(req, res, next)=>{
+    
     const {email, password} = req.body;
+    console.log(email);
+    let errorMessage = '';
+
     const user = await userModel.findOne({email});
+    console.log(user);
     if(user&& (await user.matchPassword(password))){
         res.status(200).json({
                 _id : user._id,
@@ -59,8 +63,25 @@ const authUser=async(req,res)=>{
             })
     }
     else{
-        res.status(401).json(`error:"Authentication Failed"`);
+        errorMessage = `error:"Authentication Failed"`;
+        const err = new CustomError(401, errorMessage);
+        return next(err);
     }
-}
+})
 
-module.exports = {registerUser, authUser};
+const searchUser = asyncErrorHandler( async(req, res, next)=>{
+
+    const enteredSearchText = req.query.search;
+    const searchKey = enteredSearchText ? {
+        $or: [
+            {name: {$regex : enteredSearchText, $options:"i"}},
+            {email: {$regex : enteredSearchText, $options:"i"}},
+        ],
+    }: {};
+
+    const users = await userModel.find(searchKey).find({_id:{$ne: req.user._id}});
+    res.status(200).json({users})
+
+})
+
+module.exports = {registerUser, authUser, searchUser};

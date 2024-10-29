@@ -1,6 +1,8 @@
 import React from 'react'
 import { useState } from 'react';
 import styles from './login.module.css'
+const URL=import.meta.env.VITE_APP_URL
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
 
@@ -12,11 +14,14 @@ function Login() {
   let loginError = {
     emailErr:"",
     passwordErr:"",
+    loginErr:"",
   }
 
   const [login, setLogin] = useState(loginForm);
   const [error, setError] = useState(loginError);
   const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate=useNavigate();
 
   const handleChange=(e)=>{
     let name=e.target.name;
@@ -34,7 +39,47 @@ function Login() {
     else{
       console.log("Login success");
       console.log(login)
+      loginUser();
     }
+  }
+
+  const loginUser = async()=>{
+    setLoading(true);
+    try{
+      const response = await fetch(`${URL}api/user/login`,{
+        method:"post",
+        headers:{
+          "content-type":"application/json",
+        },
+        body:JSON.stringify({
+          email:login.emailId,
+          password:login.password,
+        }),
+      });
+      if(response.ok){
+        const data = await response.json();
+        setLoading(false);
+        setError({...error,loginErr:""})
+        console.log(data);
+        localStorage.setItem("userToken",JSON.stringify(data));
+        navigate("/chat");
+        
+      }
+      else if(response.status==401){
+        throw new Error(`Incorrect Username or Password`);
+      }
+      else{
+        const error = await response.text();
+        throw new Error(`Error:${error}`);
+      }
+    }
+    catch(err){
+      console.log(String(err));
+      // console.log(err);
+      setLoading(false);
+      setError({...error,loginErr:String(err)})
+    }
+
   }
 
   const showHidePassword=()=>{
@@ -75,7 +120,11 @@ function Login() {
           </div>
           <br/>
           <div className ="form-group p-2">
-            <button onClick={handleLogin} className={`btn text-white ${styles.loginBtn} rounded-0`}>Login</button>
+            <button onClick={handleLogin} className={`btn text-white ${styles.loginBtn} rounded-0`} disabled={loading}>
+              {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
+              {!loading && <span>Login</span>}
+            </button>
+            {error.loginErr && <div className={`${styles.errorFormField}`}>{error.loginErr}</div>}
           </div>
           <div className={`${styles.registerLink} p-1`}>New User? <a href="register">Register Now</a></div>
         </form>

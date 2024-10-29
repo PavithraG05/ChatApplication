@@ -1,6 +1,9 @@
 import React from 'react'
 import { useState } from 'react';
 import styles from './register.module.css'
+import {useNavigate} from 'react-router-dom'
+const URL = import.meta.env.VITE_APP_URL;
+;
 
 function Register() {
 
@@ -9,7 +12,7 @@ function Register() {
     emailId:"",
     password:"",
     confirmPassword:"",
-    profile:"",
+    profile:undefined,
   };
 
   let registerError = {
@@ -18,12 +21,16 @@ function Register() {
     passwordErr:"",
     confirmPasswordErr:"",
     profileErr:"",
+    registrationErr:"",
   }
 
   const [register, setRegister] = useState(registerForm);
   const [error, setError] = useState(registerError);
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const navigate=useNavigate();
+
 
   const handleChange=(e)=>{
     let name=e.target.name;
@@ -38,11 +45,51 @@ function Register() {
         !register.name?setError((err)=>({...err,nameErr:"Name cannot be empty"})):setError((err)=>({...err,nameErr:""}));
         !register.emailId?setError((err)=>({...err,emailErr:"Email Id cannot be empty"})):setError((err)=>({...err,emailErr:""}));
         !register.password?setError((err)=>({...err,passwordErr:"Password cannot be empty"})):setError((err)=>({...err,passwordErr:""}));
-        !register.confirmPassword?setError((err)=>({...err,confirmPasswordErr:"Password cannot be empty"})):setError((err)=>({...err,confirmPasswordErr:""}));
+        !register.confirmPassword?setError((err)=>({...err,confirmPasswordErr:"Confirm Password cannot be empty"})):setError((err)=>({...err,confirmPasswordErr:""}));
+    }
+    else if(register.password !== register.confirmPassword){
+      setError((err)=>({...err,confirmPasswordErr:"Password does not match"}))
     }
     else{
-      console.log("Login success");
-      console.log(login)
+      console.log("Register success");
+      console.log(register)
+      registerUser();
+    }
+  }
+
+  const registerUser=async()=>{
+
+    console.log(URL);
+    try{
+      setProfileLoading(true)
+      const response = await fetch(`${URL}api/user/register`, {
+        method:"post",
+        headers:{
+          "content-type":"application/json",
+        },
+        body:JSON.stringify({
+          name:register.name, 
+          email:register.emailId, 
+          password:register.password, 
+          profile:register.profile,
+        }),
+      })
+      
+      if(!response.ok){
+        const error = await response.text();
+        throw new Error(`Error ${error}`);
+      }
+      const data = await response.json();
+      setProfileLoading(false);
+      setError(error=>({...error,registrationErr:""}));
+      console.log(data);
+      localStorage.setItem("userToken",JSON.stringify(data));
+      navigate("/chat");
+    }
+    catch(err){
+      console.log(err);
+      setProfileLoading(false);
+      setError(error=>({...error,registrationErr:"Error registering user. Please try again."}));
     }
   }
 
@@ -67,7 +114,48 @@ function Register() {
   }
 
   const handleConfirmPassword=()=>{
-    !register.confirmPassword?setError((err)=>({...err,confirmPasswordErr:"Password cannot be empty"})):setError((err)=>({...err,confirmPasswordErr:""}));
+    !register.confirmPassword?setError((err)=>({...err,confirmPasswordErr:"Confirm Password cannot be empty"})):setError((err)=>({...err,confirmPasswordErr:""}));
+  }
+
+  const handleProfile=(profilePic)=>{
+    setProfileLoading(true);
+    console.log(profilePic);
+    console.log(profilePic.type);
+    if(profilePic === undefined){
+      setError((err)=>({...err,profileErr:"Please select an Image"}))
+    }
+    else{
+      if(profilePic.type === "image/jpeg"||profilePic.type=== "image/png"||profilePic.type === "image/jpg"){
+        const data = new FormData();
+        data.append("file",profilePic);
+        data.append("upload_preset","chat-app");
+        data.append("cloud_name","doajvhxx2");
+
+        const CLOUDINARY_URL=`https://api.cloudinary.com/v1_1/doajvhxx2/image/upload`;
+        fetch(CLOUDINARY_URL,{
+          method:"post",
+          body:data,
+        })
+        .then(res=>res.json())
+        .then((data)=>{
+          console.log(data.url.toString());
+          setRegister({...register, profile:data.url.toString()});
+          setProfileLoading(false);
+          setError((err)=>({...err,profileErr:""}))
+        })
+        .catch(err=>{
+          console.log(err);
+          setProfileLoading(false);
+          setRegister({...register, profile:""});
+          setError((err)=>({...err,profileErr:"Error occured while uploading image"}))
+        }) 
+      }
+      else{
+          setProfileLoading(false);
+          setRegister({...register, profile:""});
+          setError((err)=>({...err,profileErr:"Please upload image in .jpg/.png format"}))
+      }
+    }
   }
 
   return (
@@ -106,12 +194,20 @@ function Register() {
             </div>
             <div className ="form-group p-2">
                 <label className="form-label">Upload Profile Photo*</label>
-                <input className={error.profileErr?`${styles.fieldBorderColor} form-control form-control-md`:`form-control form-control-md`} type="file" value={register.profile} name="profile" onChange={handleChange}/>
-                {error.profileErrr && <div className={`${styles.errorFormField}`}>{error.profileErr}</div>}
+                <input className={error.profileErr?`${styles.fieldBorderColor} form-control form-control-md`:`form-control form-control-md`} type="file"  name="profile" onChange={(e)=>handleProfile(e.target.files[0])}/>
+                {error.profileErr && <div className={`${styles.errorFormField}`}>{error.profileErr}</div>}
             </div>
             <br/>
             <div className ="form-group p-2">
-                <button onClick={handleRegister} className={`btn text-white ${styles.registerBtn} rounded-0`}>Register</button>
+                <button onClick={handleRegister} className={`btn text-white ${styles.registerBtn} rounded-0`} disabled={profileLoading}>
+                  {profileLoading && (
+                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  )}
+                  {!profileLoading && (
+                    <span>Register</span>
+                  )}
+                </button>
+                {error.registrationErr && <div className={`${styles.errorFormField}`}>{error.registrationErr}</div>}
             </div>
             <div className={`${styles.loginLink} p-1`}>Existing User? <a href="login">Login</a></div>
         </form>

@@ -1,10 +1,8 @@
 const express = require('express')
 const router = express.Router()
+const protected = require("../middleware/authMiddleware")
+const {accessChat} = require("../controllers/chatController")
 
-router.get('/',(req,res)=>{
+router.post('/', protected, accessChat)
 
-})
-
-router.get('/',(req,res)=>{
-    
-})
+module.exports = router;
