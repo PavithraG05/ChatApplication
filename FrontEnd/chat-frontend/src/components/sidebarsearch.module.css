@@ -1,0 +1,13 @@
+.offcanvasWidth{
+    width: 330px !important;
+}
+
+.formSearch{
+    width: 220px;
+    border: 2px solid gray;
+}
+
+.searchBtn{
+    border: 2px solid gray;
+    background-color: rgb(182, 175, 175);
+}

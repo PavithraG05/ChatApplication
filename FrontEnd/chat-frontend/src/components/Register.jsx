@@ -83,7 +83,7 @@ function Register() {
       setProfileLoading(false);
       setError(error=>({...error,registrationErr:""}));
       console.log(data);
-      localStorage.setItem("userToken",JSON.stringify(data));
+      localStorage.setItem("userInfo",JSON.stringify(data));
       navigate("/chat");
     }
     catch(err){
@@ -163,7 +163,7 @@ function Register() {
     <div className={`${styles.registerContainer} rounded-1`}>
       <ul className={`nav nav-pills nav-justified border ${styles.container}`}>
         <li className="nav-item">
-          <a className="nav-link text-black" href="login">Login</a>
+          <a className="nav-link text-black" href="/">Login</a>
         </li>
         <li className="nav-item">
           <a className={`nav-link active ${styles.bgColor}`}  aria-current="page" href="#">Register</a>
@@ -209,7 +209,7 @@ function Register() {
                 </button>
                 {error.registrationErr && <div className={`${styles.errorFormField}`}>{error.registrationErr}</div>}
             </div>
-            <div className={`${styles.loginLink} p-1`}>Existing User? <a href="login">Login</a></div>
+            <div className={`${styles.loginLink} p-1`}>Existing User? <a href="/">Login</a></div>
         </form>
     </div>
     </>

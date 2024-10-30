@@ -61,7 +61,7 @@ function Login() {
         setLoading(false);
         setError({...error,loginErr:""})
         console.log(data);
-        localStorage.setItem("userToken",JSON.stringify(data));
+        localStorage.setItem("userInfo",JSON.stringify(data));
         navigate("/chat");
         
       }
