@@ -1,0 +1,21 @@
+.profilemodal {
+    /* width: 400px !important; */
+    /* height: 500px !important; */
+    margin: auto 0;
+}
+
+.profileImage{
+    border-radius: 50%;
+    height: 150px;
+    width: 150px;
+    border-color: black !important;
+}
+
+.modalTitle{
+    font-weight: 500;
+}
+
+.profileTitle{
+    padding-top: 30px !important;
+    font-size: large !important;
+}

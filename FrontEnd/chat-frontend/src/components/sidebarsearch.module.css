@@ -5,9 +5,21 @@
 .formSearch{
     width: 220px;
     border: 2px solid gray;
+    padding: 3px 3px 3px 3px;
 }
 
 .searchBtn{
     border: 2px solid gray;
     background-color: rgb(182, 175, 175);
+    padding: 3px;
+}
+
+.errorFormField{
+    color: red;
+    font-size: 14px;
+    padding: 5px 0px;
+}
+
+.cards{
+    margin-top: 20px !important;
 }

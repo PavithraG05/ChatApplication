@@ -1,0 +1,26 @@
+.cardwidth{
+    width: 280px;
+    height:100%;
+    font-size: 13px;
+}
+
+.cardimage{
+    height:60px !important;
+    width:60px !important;
+    border-radius: 50% !important;
+}
+
+.cardTitle{
+    padding:0px;
+    margin:0px !important;
+}
+
+.cardcontent{
+
+}
+
+.cardwidth:hover{
+    cursor: pointer;
+    border: 1px solid black;
+    background-color: rgba(245, 248, 248, 0.766);
+}

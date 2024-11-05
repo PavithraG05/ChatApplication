@@ -3,11 +3,15 @@ import styles from "./chatheader.module.css"
 import { useState } from 'react'
 import SideBarSearch from './SideBarSearch'
 import { ChatState } from './context/ChatProvider'
+import ProfileModal from './ProfileModal'
+import { useNavigate } from 'react-router-dom'
 
 function ChatHeader() {
 
     const [offCanvas, setOffcanvas] = useState(false)
+    const [profileModal, setProfileModal] = useState(false);
     const {user} = ChatState();
+    const navigate = useNavigate();
 
     const toggleOffcanvas = () => {
         setOffcanvas(offCanvas=>!offCanvas)
@@ -16,7 +20,17 @@ function ChatHeader() {
     useEffect(()=>{
         console.log(user);
     },[])
+
+    const handleProfile = () => {
+        setProfileModal(true);
+        console.log(profileModal)
+    };
     
+    const logout = () => {
+        localStorage.removeItem("userInfo");
+        navigate('/');
+    };
+
   return (
     <div>
         <nav className="navbar bg-body-tertiary">
@@ -37,16 +51,16 @@ function ChatHeader() {
                         {/* <i className={`bi bi-caret-down-fill ${styles.dropdown}`}></i> */}
                     </button>
                     <ul className={`dropdown-menu dropdown-menu-end ${styles.dropdownList} rounded-0`}>
-                        <li><a className={`dropdown-item ${styles.listItem}`} href="#">My Profile</a></li>
+                        <li><button className={`dropdown-item ${styles.listItem}`} onClick={handleProfile}>My Profile</button></li>
                         {/* <hr/> */}
                         {/* <li><hr className={`dropdown-divider`}/></li> */}
-                        <li><a className={`dropdown-item ${styles.listItem}`} href="#">Logout</a></li>
+                        <li><button className={`dropdown-item ${styles.listItem}`} onClick={logout}>Logout</button></li>
                     </ul>
                 </div>
             </div>
             </div>
         </nav>
-
+        {profileModal && <ProfileModal profileModal={profileModal} setProfileModal={setProfileModal}/>}
         <SideBarSearch offCanvas={offCanvas} toggleOffcanvas={toggleOffcanvas}/>
     </div>
   )

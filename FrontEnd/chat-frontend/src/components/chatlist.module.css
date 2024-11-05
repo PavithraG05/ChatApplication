@@ -7,4 +7,32 @@
 .groupBtn{
     background-color: #a5cafd80 !important;
     font-weight: 600 !important;
+    color: black !important;
+}
+
+.cardList{
+    padding-top:20px;
+    cursor: pointer;
+}
+
+.cardone:hover{
+    background-color: beige;
+}
+
+.cardBody{
+    padding:5px 10px !important;
+}
+
+.cardTitle{
+    font-size: 14px;
+    font-weight: 500 !important;
+}
+
+.cardsubTitle{
+    font-size: small;
+    font-weight: 600 !important;
+}
+
+.cardBg{
+    background-color: beige;
 }
