@@ -6,8 +6,8 @@
 
 .profileImage{
     border-radius: 50%;
-    height: 150px;
-    width: 150px;
+    height: 100px;
+    width: 100px;
     border-color: black !important;
 }
 
@@ -16,6 +16,10 @@
 }
 
 .profileTitle{
-    padding-top: 30px !important;
-    font-size: large !important;
+    padding: 10px !important;
+    font-size: medium !important;
+}
+
+.modalWidth{
+    /* width:500px; */
 }

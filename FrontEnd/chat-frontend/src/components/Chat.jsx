@@ -1,16 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ChatHeader from './chatHeader'
 import ChatList from './ChatList'
-import ChatBox from './ChatBox'
+import ChatBox from './MessageBox'
 import styles from './chat.module.css'
+import { ChatState } from './context/ChatProvider'
 
 function Chat() {
+
+  const [fetchAgain, setFetchAgain] = useState(false);
+  const {user} = ChatState();
+  
+
   return (
     <div>
-      <ChatHeader/>
+      {user && <ChatHeader/>}
       <div className="row">
-        <div className={`col-sm-12 col-md-4 ${styles.chat}`}><ChatList/></div>
-        <div className={`col-sm-12 col-md-8`}><ChatBox/></div>
+        {user && <div className={`col-sm-12 col-md-4 ${styles.chat}`}><ChatList fetchAgain={fetchAgain}/></div>}
+        {user && <div className={`col-sm-12 col-md-8 ${styles.message}`}><ChatBox/></div>}
       </div>
       
     </div>

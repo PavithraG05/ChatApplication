@@ -53,26 +53,18 @@ function Register() {
     else{
       console.log("Register success");
       console.log(register)
+      
       registerUser();
+      
     }
   }
 
-  const registerUser=async()=>{
-
-    console.log(URL);
-    try{
-      setProfileLoading(true)
-      const response = await fetch(`${URL}api/user/register`, {
-        method:"post",
+  const checkUserExist=async () => {
+      const response = await fetch(`${URL}api/user/${register.emailId}`, {
+        method:"get",
         headers:{
           "content-type":"application/json",
         },
-        body:JSON.stringify({
-          name:register.name, 
-          email:register.emailId, 
-          password:register.password, 
-          profile:register.profile,
-        }),
       })
       
       if(!response.ok){
@@ -80,11 +72,46 @@ function Register() {
         throw new Error(`Error ${error}`);
       }
       const data = await response.json();
-      setProfileLoading(false);
       setError(error=>({...error,registrationErr:""}));
-      console.log(data);
-      localStorage.setItem("userInfo",JSON.stringify(data));
-      navigate("/chat");
+      console.log(data.exist);
+      return data.exist
+  }
+
+  const registerUser=async()=>{
+
+    console.log(URL);
+    try{
+      setProfileLoading(true)
+      const exist = await checkUserExist();
+      if(!exist){
+        const response = await fetch(`${URL}api/user/register`, {
+          method:"post",
+          headers:{
+            "content-type":"application/json",
+          },
+          body:JSON.stringify({
+            name:register.name, 
+            email:register.emailId, 
+            password:register.password, 
+            profile:register.profile,
+          }),
+        })
+        
+        if(!response.ok){
+          const error = await response.text();
+          throw new Error(`Error ${error}`);
+        }
+        const data = await response.json();
+        setProfileLoading(false);
+        setError(error=>({...error,registrationErr:""}));
+        console.log(data);
+        localStorage.setItem("userInfo",JSON.stringify(data));
+        navigate("/chat");
+      }
+      else{
+        setProfileLoading(false);
+        setError(error=>({...error,registrationErr:"User with this email already exists. Please Login."}));
+      }
     }
     catch(err){
       console.log(err);
@@ -160,15 +187,15 @@ function Register() {
 
   return (
     <>
-    <div className={`${styles.registerContainer} rounded-1`}>
+    {/* <div className={`${styles.registerContainer} rounded-1`}>
       <ul className={`nav nav-pills nav-justified border ${styles.container}`}>
         <li className="nav-item">
-          <a className="nav-link text-black" href="/">Login</a>
+          <a className="nav-link text-black" href="/login">Login</a>
         </li>
         <li className="nav-item">
           <a className={`nav-link active ${styles.bgColor}`}  aria-current="page" href="#">Register</a>
         </li>
-      </ul>
+      </ul> */}
         <form className={`${styles.formContainer}`}>
             <div className ="form-group p-2">
                 <label className="form-label">Name*</label>
@@ -209,9 +236,8 @@ function Register() {
                 </button>
                 {error.registrationErr && <div className={`${styles.errorFormField}`}>{error.registrationErr}</div>}
             </div>
-            <div className={`${styles.loginLink} p-1`}>Existing User? <a href="/">Login</a></div>
+            <div className={`${styles.loginLink} p-1`}>Existing User? <a href="#">Login</a></div>
         </form>
-    </div>
     </>
   )
 }

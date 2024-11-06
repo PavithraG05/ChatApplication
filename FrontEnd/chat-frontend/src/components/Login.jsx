@@ -1,8 +1,9 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './login.module.css'
 const URL=import.meta.env.VITE_APP_URL
 import { useNavigate } from 'react-router-dom';
+import Register from './Register';
 
 function Login() {
 
@@ -22,6 +23,15 @@ function Login() {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate=useNavigate();
+  
+  useEffect(()=>{
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      console.log(`Login page - Userinfo present or not: ${userInfo}`);
+      if(userInfo){
+          navigate("/chat")
+          console.log("user info retrieved from local storage");
+      }
+  },[navigate])
 
   const handleChange=(e)=>{
     let name=e.target.name;
@@ -95,15 +105,16 @@ function Login() {
   }
 
   return (
-    <div className={`${styles.loginContainer} rounded-1`}>
-      <ul className={`nav nav-pills nav-justified ${styles.container}`}>
-        <li className="nav-item">
-          <a className={`nav-link active ${styles.bgColor}`} aria-current="page" href="#">Login</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link text-black" href="register">Register</a>
-        </li>
-      </ul>
+    // <div className={`${styles.loginContainer} rounded-1`}>
+    //   <ul className={`nav nav-pills nav-justified ${styles.container}`}>
+    //     <li className="nav-item">
+    //       <a className={`nav-link active ${styles.bgColor}`} aria-current="page" href="#">Login</a>
+    //     </li>
+    //     <li className="nav-item">
+    //       <a className="nav-link text-black" href="/register">Register</a>
+    //     </li>
+    //   </ul>
+      <>
       {/* <div className={`${styles.loginContainer} rounded-0`}> */}
       {/* <div className={`${styles.loginTitle} p-1`}>Login Form</div> */}
         <form className={`${styles.formContainer}`}>
@@ -126,10 +137,10 @@ function Login() {
             </button>
             {error.loginErr && <div className={`${styles.errorFormField}`}>{error.loginErr}</div>}
           </div>
-          <div className={`${styles.registerLink} p-1`}>New User? <a href="register">Register Now</a></div>
+          <div className={`${styles.registerLink} p-1`}>New User? <a href="#">Register Now</a></div>
         </form>
-      {/* </?div> */}
-    </div>
+        </>
+    // </div>
   )
 }
 

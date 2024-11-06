@@ -1,0 +1,78 @@
+.profilemodal {
+    /* width: 400px !important; */
+    /* height: 500px !important; */
+    margin: auto 0;
+}
+
+.profileImage {
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    border-color: black !important;
+}
+
+.modalTitle {
+    font-weight: 500;
+}
+
+.profileTitle {
+    padding: 10px !important;
+    font-size: medium !important;
+}
+
+.chatnameBox{
+    width:100% !important;
+    padding: 4px;
+    /* margin: 3px; */
+}
+
+.updatebtn{
+    background-color:rgb(29, 29, 253) !important;
+    font-weight: 500;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+}
+
+.searchBox{
+    width: 100% !important;
+    padding: 4px;
+}
+
+.users{
+    padding:3px 3px 3px 6px;
+    margin-right:12px;
+    background-color:palevioletred;
+    color: white !important;
+    cursor: pointer;
+}
+
+.cancel{
+    /* float: end !important; */
+    color: white;
+    font-size: 1.2rem !important;
+}
+
+.userText{
+    padding-right:7px;
+}
+
+.userSearchList{
+    padding: 10px;
+    height: 120px ;
+    cursor: pointer
+}
+
+.userProfileImg{
+    height: 20px;
+    width: 20px;
+    border-radius:  50%;
+}
+
+.searchUser:hover{
+    background-color: antiquewhite;
+}
+
+.searchUser{
+    padding-bottom:5px;
+}

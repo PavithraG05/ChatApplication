@@ -4,12 +4,13 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { ChatState } from './context/ChatProvider'
 
-function ProfileModal({profileModal, setProfileModal}) {
+function ProfileModal({profileModal, setProfileModal, user}) {
 
-    const {user} = ChatState();
+    // const {user} = ChatState();
 
     useEffect(()=>{
      console.log(profileModal)   
+     console.log(user);
     })
 
     const closeProfile = () => {
@@ -23,9 +24,9 @@ function ProfileModal({profileModal, setProfileModal}) {
         {/* <Modal.Header closeButton>
           <Modal.Title>Profile</Modal.Title>
         </Modal.Header> */}
-        <Modal.Body closeButton>
+        <Modal.Body className={` ${styles.modalWidth}`}>
             <div className={`row`}>
-                <div className={`col-5`}>
+                <div className={`col-4`}>
                     <img src={user.profile} alt="profileimage" className={`border border-2 ${styles.profileImage}`}/>
                 </div>
                 <div className={`col-7  ${styles.profileTitle}`}>

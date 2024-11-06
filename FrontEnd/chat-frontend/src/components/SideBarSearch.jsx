@@ -99,17 +99,19 @@ function SideBarSearch({offCanvas, toggleOffcanvas}) {
                 const data = await response.json();
                 console.log(data);
                 if(!chatList.find((chat) => chat._id === data._id)){
-                    setChatList((data)=>[data,...chatList])
+                    setChatList((chatList)=>[data,...chatList])
+                    
                 }
                 setSelectedChat(data);
                 setAccessChatLoading(false);
                 console.log(chatList);
-                console.log(selectedChat);
             }
             else{
                 const error = await response.text();
                 throw new Error(`Error: ${error}`);
             }
+            toggleOffcanvas();
+            console.log(selectedChat);
         }
         catch(error){
             console.log(String(error));

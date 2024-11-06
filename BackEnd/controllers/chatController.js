@@ -50,8 +50,9 @@ const accessChat = asyncErrorHandler(async (req, res, next) => {
 
 const fetchAllChats = asyncErrorHandler(async (req, res, next) => {
 
+    const userId = req.params.id;
     const fetchChats = await chatModel.find({
-        users: {$elemMatch :{$eq: req.user._id } }
+        users: {$elemMatch :{$eq: userId } }
     })
     .populate({
         path: "users",

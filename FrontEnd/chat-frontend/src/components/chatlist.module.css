@@ -5,9 +5,9 @@
 }
 
 .groupBtn{
-    background-color: #a5cafd80 !important;
+    background-color: rgb(68, 68, 252) !important;
     font-weight: 600 !important;
-    color: black !important;
+    color: white !important;
 }
 
 .cardList{
@@ -24,7 +24,7 @@
 }
 
 .cardTitle{
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500 !important;
 }
 
@@ -34,5 +34,9 @@
 }
 
 .cardBg{
-    background-color: beige;
+    background-color: #e2b93d !important;
+}
+
+.chatContainer{
+    height: 90vh !important;
 }

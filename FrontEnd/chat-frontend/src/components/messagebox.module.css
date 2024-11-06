@@ -1,0 +1,77 @@
+.chatTextBox{
+    border: 0.5px solid rgb(190, 190, 190) !important;
+    padding: 5px 10px;
+    width: 100%;
+    
+}
+
+.chatBox{
+    padding: 25px 10px 0px 10px;
+    /* border: 1px solid blue; */
+}
+
+.messageArea{
+    /* border: 1px solid red; */
+    padding: 10px;
+    height: 90%;
+}
+
+.chatArea{
+    /* border: 1px solid blue; */
+    padding: 10px 10px;
+    height:90vh !important;
+}
+
+.profileView{
+    border: none;
+    color: none !important;
+    height: 30px;
+    width: 30px;
+    /* padding: 5px; */
+}
+
+.username{
+    font-size: large;
+    font-weight: 500;
+    margin:0px;
+    padding-left: 10px;
+    padding-top: 5px;
+}
+
+.chatTitle{
+    /* border: 1px solid blue; */
+    padding:0px !important;
+}
+
+.messageDiv{
+    background-color: #8f9090;
+    border: 1px solid red;
+    height: 84vh !important;
+    margin-top:10px !important;
+}
+
+.chatText{
+    color: rgb(98, 88, 88);
+    text-align: center;
+    margin:22vh auto;
+    font-size: larger;
+    font-weight: 500;
+    opacity: 0.8;
+    /* margin: auto 50px !important; */
+}
+
+.messageImage{
+    height: 150px;
+    width: 150px;
+    opacity: 0.2;
+    /* margin: 40vh auto; */
+}
+
+.avatar{
+    width:36px;
+    height:36px;
+    border-radius: 50%;
+    border: 1px solid rgba(29, 14, 94, 0.284);
+    margin-left:3px;
+    cursor: pointer;
+}

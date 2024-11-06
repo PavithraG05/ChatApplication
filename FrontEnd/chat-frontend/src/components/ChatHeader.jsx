@@ -9,17 +9,16 @@ import { useNavigate } from 'react-router-dom'
 function ChatHeader() {
 
     const [offCanvas, setOffcanvas] = useState(false)
-    const [profileModal, setProfileModal] = useState(false);
-    const {user} = ChatState();
+    const {user, setChatList ,profileModal, setProfileModal} = ChatState();
     const navigate = useNavigate();
 
     const toggleOffcanvas = () => {
         setOffcanvas(offCanvas=>!offCanvas)
     }
 
-    useEffect(()=>{
-        console.log(user);
-    },[])
+    // useEffect(()=>{
+    //     console.log(`Printing user details obtained from localstorage: ${JSON.stringify(user)}`);
+    // })
 
     const handleProfile = () => {
         setProfileModal(true);
@@ -29,6 +28,7 @@ function ChatHeader() {
     const logout = () => {
         localStorage.removeItem("userInfo");
         navigate('/');
+        setChatList([]);
     };
 
   return (
@@ -38,10 +38,10 @@ function ChatHeader() {
             <form className={`d-flex ${styles.form}`}>
                 <button className={`btn ${styles.searchBtn}`} type="button" onClick={toggleOffcanvas} aria-controls="offcanvasExample"><b><i className="bi bi-search"></i></b> &nbsp; <b>Search User</b></button>
             </form>
-            <div className="border">
+            <div>
                 <a className="navbar-brand align-center" href="/"><img className={`${styles.chatIconSize}`} src="chaticon.png"></img>&nbsp;<img className={`${styles.chatterBoxlogo}`} src="texticon.png"></img></a>
             </div>
-            <div className={`d-flex ${styles.notificationProfile} border`}>
+            <div className={`d-flex ${styles.notificationProfile}`}>
                 <div>
                     <button className={`btn ${styles.notifcationBtn}`} type="button" ><i className={`${styles.notification} bi bi-bell-fill`}></i></button>
                 </div>
@@ -60,7 +60,7 @@ function ChatHeader() {
             </div>
             </div>
         </nav>
-        {profileModal && <ProfileModal profileModal={profileModal} setProfileModal={setProfileModal}/>}
+        {profileModal && <ProfileModal profileModal={profileModal} setProfileModal={setProfileModal} user={user}/>}
         <SideBarSearch offCanvas={offCanvas} toggleOffcanvas={toggleOffcanvas}/>
     </div>
   )

@@ -84,4 +84,21 @@ const searchUser = asyncErrorHandler( async(req, res, next)=>{
 
 })
 
-module.exports = {registerUser, authUser, searchUser};
+const checkEmailExists = asyncErrorHandler( async(req, res, next) => {
+    const emailId = req.params.id;
+    const searchUserbyEmail = await userModel.findOne({
+        email: emailId
+    })
+    if(searchUserbyEmail){
+        res.status(200).json({
+                exist: true
+            })
+    }
+    if(!searchUserbyEmail){
+        res.status(200).json({
+                exist: false
+            })
+    }
+})
+
+module.exports = {registerUser, authUser, searchUser, checkEmailExists};
