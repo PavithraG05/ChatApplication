@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import styles from './groupmodal.module.css';
 import { ChatState } from './context/ChatProvider';
+import SearchStackLoader from './SearchStackLoader';
 const URL = import.meta.env.VITE_APP_URL;
 
 function GroupModal({groupModal, setGroupModal, selectedChat}) {
@@ -26,42 +27,42 @@ function GroupModal({groupModal, setGroupModal, selectedChat}) {
         }
     }
 
-const searchUsers=async()=>{
-   setLoading(true);
-    try{
-        const response = await fetch(`${URL}api/user?search=${searchText}`,{
-            method:"get",
-            headers:{
-            "Content-Type":"application/json; charset=utf-8",
-            "Authorization":`Bearer ${user.token}`,
-            },
-        });
+    const searchUsers=async()=>{
+        setLoading(true);
+        try{
+            const response = await fetch(`${URL}api/user?search=${searchText}`,{
+                method:"get",
+                headers:{
+                "Content-Type":"application/json; charset=utf-8",
+                "Authorization":`Bearer ${user.token}`,
+                },
+            });
 
-        if(response.ok){
-            // console.log(response.ok)
-            // console.log(await response.json());
-            const data = await response.json();
+            if(response.ok){
+                // console.log(response.ok)
+                // console.log(await response.json());
+                const data = await response.json();
 
+                setLoading(false);
+                setSearchErr("")
+                console.log(data);
+                setSearchList(data.users);
+                
+            }
+            else{
+                const error = await response.text();
+                throw new Error(`Error:${error}`);
+            }
+            console.log(searchList);
+        }
+        catch(err){
+            console.log(String(err));
+            // console.log(err);
             setLoading(false);
-            setSearchErr("")
-            console.log(data);
-            setSearchList(data.users);
-            
+            setSearchErr(String(err))
+            setSearchList([]);
         }
-        else{
-            const error = await response.text();
-            throw new Error(`Error:${error}`);
-        }
-        console.log(searchList);
     }
-    catch(err){
-        console.log(String(err));
-        // console.log(err);
-        setLoading(false);
-        setSearchErr(String(err))
-        setSearchList([]);
-    }
-}
 
   return (
     <Modal show={groupModal} onHide={closeGroupModal} className={`${styles.profilemodal}`} aria-labelledby="contained-modal-title-vcenter" centered>
@@ -70,8 +71,8 @@ const searchUsers=async()=>{
         </Modal.Header>
         <Modal.Body className={` ${styles.modalWidth}`}>
             <div  className={`mb-3 d-flex`}>
-                {selectedChat.users.map(user => (
-                <div className={`d-flex justify-content-between ${styles.users} rounded-1`}><span className={`${styles.userText}`}>{user.name}</span><div><i className={`bi bi-x ${styles.cancel}`}></i></div></div>
+                {selectedChat.users.map((user, index) => (
+                <div key={index} className={`d-flex justify-content-between ${styles.users} rounded-1`}><span className={`${styles.userText}`}>{user.name}</span><div><i className={`bi bi-x ${styles.cancel}`}></i></div></div>
                 ))}
             </div>
             <div className={`row mb-3`}>
@@ -87,7 +88,7 @@ const searchUsers=async()=>{
                 
                     {searchText.length >= 1 && loading && 
                         <div className={`border ${styles.userSearchList} overflow-y-scroll`}>
-                            <div>Loading</div>
+                            <div><SearchStackLoader/></div>
                         </div>}
                     {searchText.length >= 1 && !loading && 
                         <div className={`border ${styles.userSearchList} overflow-y-scroll`}>

@@ -3,6 +3,7 @@ import styles from './chatlist.module.css'
 import { ChatState } from './context/ChatProvider';
 import StackLoader from './StackLoader';
 import { getSender } from './getSender';
+import CreateGroup from './CreateGroup';
 const URL = import.meta.env.VITE_APP_URL
 
 function ChatList({fetchAgain}) {
@@ -11,6 +12,7 @@ function ChatList({fetchAgain}) {
     const [loggedUser, setLoggedUser] = useState();
     const [chatListApiErr, setChatListApiErr] = useState("");
     const {user, chatList, setChatList, selectedChat, setSelectedChat} = ChatState();
+    const [groupChatModal, setGroupChatModal] = useState(false);
 
     useEffect(()=>{
         console.log("Fetching all chats of an user")
@@ -51,6 +53,11 @@ function ChatList({fetchAgain}) {
         }
     }
 
+    const invokeCreateChat=()=>{
+        setGroupChatModal(true);
+        console.log(groupChatModal);
+    }
+
   return (
     <div className={`border bg-light`}>
         <div className={`container py-3 ${styles.chatContainer}`}>
@@ -59,7 +66,7 @@ function ChatList({fetchAgain}) {
                     <h6 className={`${styles.chatTitle}`}>My Chats</h6>
                 </div>
                 <div className={`col-7 text-end`}>
-                    <button className={`btn btn-sm rounded-1 ${styles.groupBtn}`}><i className="bi bi-plus-square"></i>&nbsp; Group Chat</button>
+                    <button className={`btn btn-sm rounded-1 ${styles.groupBtn}`} onClick={invokeCreateChat}><i className="bi bi-plus-square" ></i>&nbsp; Group Chat</button>
                 </div>
             </div>
             <hr/>
@@ -81,6 +88,7 @@ function ChatList({fetchAgain}) {
 
             </div>
         </div>
+        {groupChatModal && <CreateGroup groupChatModal={groupChatModal} setGroupChatModal={setGroupChatModal}/>}
     </div>
   )
 }
