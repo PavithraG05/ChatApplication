@@ -5,9 +5,10 @@ import { getSender, getSenderDetails } from './getSender';
 import ProfileModal from './ProfileModal';
 import GroupModal from './GroupModal';
 
-function MessageBox() {
+function MessageBox({fetchAgain, setFetchAgain}) {
 
-    const {user, selectedChat, profileModal, setProfileModal} = ChatState();
+    const {user, selectedChat} = ChatState();
+    const [profileModal, setProfileModal] = useState(false);
     // const [profileModal, setProfileModal] = useState();
     const [groupModal, setGroupModal] = useState(false);
    
@@ -49,7 +50,7 @@ function MessageBox() {
             }
         </div>
         {profileModal && <ProfileModal profileModal={profileModal} setProfileModal={setProfileModal} user={getSenderDetails(user, selectedChat.users)}/>}
-        {groupModal && <GroupModal groupModal={groupModal} setGroupModal={setGroupModal} selectedChat={selectedChat}/>}
+        {groupModal && <GroupModal groupModal={groupModal} setGroupModal={setGroupModal} selectedChat={selectedChat} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>}
     </div>
   )
 }

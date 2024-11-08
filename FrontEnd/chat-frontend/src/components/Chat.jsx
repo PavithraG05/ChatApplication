@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ChatHeader from './chatHeader'
 import ChatList from './ChatList'
-import ChatBox from './MessageBox'
+import MessageBox from './MessageBox'
 import styles from './chat.module.css'
 import { ChatState } from './context/ChatProvider'
 
@@ -16,7 +16,7 @@ function Chat() {
       {user && <ChatHeader/>}
       <div className="row">
         {user && <div className={`col-sm-12 col-md-4 ${styles.chat}`}><ChatList fetchAgain={fetchAgain}/></div>}
-        {user && <div className={`col-sm-12 col-md-8 ${styles.message}`}><ChatBox/></div>}
+        {user && <div className={`col-sm-12 col-md-8 ${styles.message}`}><MessageBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/></div>}
       </div>
       
     </div>

@@ -3,13 +3,15 @@ import styles from "./chatheader.module.css"
 import { useState } from 'react'
 import SideBarSearch from './SideBarSearch'
 import { ChatState } from './context/ChatProvider'
-import ProfileModal from './ProfileModal'
+// import UserProfileModal from './UserProfileModal'
 import { useNavigate } from 'react-router-dom'
+import ProfileModal from './ProfileModal'
 
 function ChatHeader() {
 
     const [offCanvas, setOffcanvas] = useState(false)
-    const {user, setChatList ,profileModal, setProfileModal} = ChatState();
+    const {user, setChatList } = ChatState();
+     const [profileModal, setProfileModal] = useState(false);
     const navigate = useNavigate();
 
     const toggleOffcanvas = () => {

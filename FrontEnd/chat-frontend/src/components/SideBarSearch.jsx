@@ -11,6 +11,7 @@ const URL=import.meta.env.VITE_APP_URL
 function SideBarSearch({offCanvas, toggleOffcanvas}) {
 
     const [searchtext, setSearchtext] = useState("");
+    const [debouncedSearchtext, setDebouncedSearchtext] = useState(searchtext);
     const [searchErr, setSearchErr] = useState("");
     const {user, chatList, setChatList, selectedChat, setSelectedChat, toast, setToast} = ChatState();
     const [searchList, setSearchList] = useState([]);
@@ -20,20 +21,43 @@ function SideBarSearch({offCanvas, toggleOffcanvas}) {
 
     useEffect(()=>{
         setSearchErr("");
-       
+        setSearchtext("");
+        setSearchList("");
+        setDebouncedSearchtext("");
     },[offCanvas])
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+        setDebouncedSearchtext(searchtext);
+        }, 50);
+
+        return () => {
+        clearTimeout(timeoutId);
+        };
+    }, [searchtext]);
+
+    useEffect(()=>{
+        
+        if(debouncedSearchtext){
+            setSearchList([])
+            if(debouncedSearchtext.length >= 2){
+                searchUser();
+            }
+            else{
+                setSearchErr("Enter minimum 2 characters to search.")
+                
+            }
+        }
+    },[debouncedSearchtext])
 
     const handleSearch=(e) =>{
         setSearchErr("");
         setSearchtext(e.target.value);
-        setSearchList([]);
-        if(searchtext.length>=2){
-            searchUser();
-        }
+        // setSearchList([]);
     }
 
     const searchUser=()=>{
-        if(!searchtext){
+        if(!debouncedSearchtext){
             setSearchErr("Please enter something in search")
         }
         else{
@@ -43,11 +67,11 @@ function SideBarSearch({offCanvas, toggleOffcanvas}) {
 
     const fetchUsersList = async() => {
 
-        console.log(typeof searchtext);
+        console.log(typeof debouncedSearchtext);
         console.log(typeof user.token)
         setLoading(true);
         try{
-            const response = await fetch(`${URL}api/user?search=${searchtext}`,{
+            const response = await fetch(`${URL}api/user?search=${debouncedSearchtext}`,{
                 method:"get",
                 headers:{
                 "Content-Type":"application/json; charset=utf-8",
@@ -139,9 +163,10 @@ function SideBarSearch({offCanvas, toggleOffcanvas}) {
                     {searchErr && <div  className={`${styles.errorFormField}`}>{searchErr}</div>}
                     {loading &&<StackLoader/>}
                     <div className={`${styles.cards}`}>
-                        {searchList && searchList.map(searchUser=>(
+                        {!loading && searchList.length>0 && searchList.map(searchUser=>(
                            <SearchUserList key={searchUser._id} searchUser={searchUser} accessOrCreateChat={accessOrCreateChat}/> 
                         ))}
+                        {debouncedSearchtext.length>=2 && searchList.length===0 && !loading && <div>No results found</div>}
                     </div>
                 </div>
             </div>

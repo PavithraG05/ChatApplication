@@ -13,6 +13,7 @@
 .cardList{
     padding-top:20px;
     cursor: pointer;
+    padding-right: 10px;
 }
 
 .cardone:hover{
@@ -38,5 +39,30 @@
 }
 
 .chatContainer{
-    height: 90vh !important;
+    height: 90.2vh !important;
+}
+
+.chatListDiv{
+    height:80vh !important;
+}
+
+/* Works on Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(228, 228, 230) rgb(246, 244, 238);
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+    background: rgb(228, 228, 230)
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: rgb(246, 244, 238);
+    border-radius: 20px;
+    /* border: 3px solid orange; */
 }

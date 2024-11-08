@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import SearchStackLoader from './SearchStackLoader';
 import { ChatState } from './context/ChatProvider';
+import ToastMsg from './ToastMsg';
 const URL = import.meta.env.VITE_APP_URL
 
 function CreateGroup({groupChatModal, setGroupChatModal}) {
@@ -12,10 +13,21 @@ function CreateGroup({groupChatModal, setGroupChatModal}) {
     const [searchText, setSearchText] = useState("");
     const [loading, setLoading] = useState(false);
     const [modalErr, setModalErr] = useState("");
-    const {user} = ChatState();
+    const {user, selectedChat, setSelectedChat, chatList, setChatList, toast, setToast} = ChatState();
     const [searchList, setSearchList] = useState([]);
     const [createChatLoading, setCreateChatLoading] = useState(false);
     const [selectedSearchUsers, setSelectedSearchUsers] = useState([]);
+    
+    useEffect(()=>{
+        if(searchText){
+            if(searchText.length >= 2){
+                searchUsers();
+            }
+            else{
+                setModalErr("Enter minimum 2 characters to search.")
+            }
+        }
+    },[searchText]) 
 
     const closeGroup = () => {
         setGroupChatModal(false);
@@ -30,9 +42,6 @@ function CreateGroup({groupChatModal, setGroupChatModal}) {
         setModalErr("");
         setSearchList([]);
         setSearchText(e.target.value);
-        if(searchText.length >= 1){
-            searchUsers();
-        }
     }
 
     const searchUsers=async()=>{
@@ -73,25 +82,56 @@ function CreateGroup({groupChatModal, setGroupChatModal}) {
     }
 
     const handleSelectedUsers = (user) => {
+        if(selectedSearchUsers.includes(user)){
+            setModalErr("User already added to the group")
+            return
+        }
         setSelectedSearchUsers(users => [...users,user])
+        setModalErr("");
     }
 
     const createChat=()=>{
         if(!chatName){
             setModalErr("Chatname cannot be empty");
         }
-        else if(selectedSearchUsers.length<3){
-            setModalErr("Chat group should have minimum 3 users");
+        else if(selectedSearchUsers.length<2){
+            console.log(selectedSearchUsers);
+            setModalErr("Chat group should have minimum 2 users");
         }
         else{
             groupChat();
         }
     }
 
-    const groupChat=()=>{
+    const groupChat=async ()=>{
         setCreateChatLoading(true);
+        let grpUsers = JSON.stringify(selectedSearchUsers.map(u => u._id));
+        // grpUsers.push(user)
+        console.log(grpUsers);
         try{
+            const response = await fetch(`${URL}api/chat/group`,{
+                method:"post",
+                headers:{
+                    "content-type":"application/json",
+                    "Authorization":`Bearer ${user.token}`,
+                },
+                body:JSON.stringify({
+                    name: chatName,
+                    users: grpUsers,
+                }),
+            });
 
+            if(!response.ok){
+                const error = await response.text();
+                throw new Error(`error: ${error}`);
+            }
+            const data = await response.json();
+            setCreateChatLoading(false);
+            setModalErr("");
+            setSelectedChat(data);
+            setChatList([data, ...chatList]);
+            setGroupChatModal(false);
+            setToast(true);
         }
         catch(err){
             console.log(String(err));
@@ -99,6 +139,14 @@ function CreateGroup({groupChatModal, setGroupChatModal}) {
             setCreateChatLoading(false);
 
         }
+    }
+
+    const removeUser=(userData)=>{
+        console.log(selectedSearchUsers);
+        console.log(userData);
+        let updatedSelectedUserList = selectedSearchUsers.filter(singleuser => singleuser._id !== userData._id);
+        setSelectedSearchUsers(updatedSelectedUserList);
+        // console.log(selectedSearchUsers);
     }
 
   return (
@@ -115,11 +163,11 @@ function CreateGroup({groupChatModal, setGroupChatModal}) {
                     <div className={`mb-3`}>
                          <input type="text" className={`${styles.searchBox}`} placeholder='Add user to group' value={searchText} onChange={handleSearch}/>
                 
-                        {searchText.length >= 1 && loading && 
+                        {searchText.length > 1 && loading && 
                             <div className={`border ${styles.userSearchList} overflow-y-scroll`}>
                                 <div><SearchStackLoader/></div>
                             </div>}
-                        {searchText.length >= 1 && !loading && 
+                        {searchText.length > 1 && !loading && 
                             <div className={`border ${styles.userSearchList} overflow-y-scroll`}>
                                 {searchList.map(user => (
                                     <div key={user._id} className={`${styles.searchUser}`} onClick={()=>handleSelectedUsers(user)}>
@@ -128,9 +176,9 @@ function CreateGroup({groupChatModal, setGroupChatModal}) {
                                 ))}
                             </div>}
                     </div>
-                    <div className={`mb-3 d-flex`}>
+                    <div className={`mb-1 d-flex flex-wrap`}>
                         {selectedSearchUsers && selectedSearchUsers.map((user, index)=>(
-                            <div key={index} className={`d-flex justify-content-between ${styles.users} rounded-1`}><span className={`${styles.userText}`}>{user.name}</span><div><i className={`bi bi-x ${styles.cancel}`}></i></div></div>
+                            <div key={index} className={`d-flex justify-content-between ${styles.users} rounded-1`}><span className={`${styles.userText}`}>{user.name}</span><div><i className={`bi bi-x ${styles.cancel}`} onClick={()=>removeUser(user)}></i></div></div>
                         ))}
                     </div>
                 </div>            
@@ -146,6 +194,7 @@ function CreateGroup({groupChatModal, setGroupChatModal}) {
             
             </Modal.Footer>
         </Modal>
+        {/* {toast && <ToastMsg msg={"Group Created Successfully."}/>} */}
     </div>
   )
 }

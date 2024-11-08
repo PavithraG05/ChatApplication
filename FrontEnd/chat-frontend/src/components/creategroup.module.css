@@ -55,8 +55,9 @@
 }
 
 .users {
-    padding: 3px 3px 3px 6px;
+    padding: 3px 3px 3px 3px;
     margin-right: 12px;
+    margin-bottom: 6px;
     background-color: palevioletred;
     color: white !important;
     cursor: pointer;
