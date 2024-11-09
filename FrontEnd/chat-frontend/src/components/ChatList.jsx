@@ -43,7 +43,7 @@ function ChatList({fetchAgain}) {
         console.log(`LoggedUserDetails from ChatList: ${JSON.stringify(loggedUser)}`);
         console.log(`UserDetails from ChatList: ${JSON.stringify(user)}`);
         try{
-            const response = await fetch(`${URL}api/chat/${user._id}`,{
+            const response = await fetch(`${URL}api/chat/`,{
                 method:"get",
                 headers:{
                     "Authorization": `Bearer ${user.token}`

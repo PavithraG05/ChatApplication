@@ -7,13 +7,14 @@
 
 .chatBox{
     padding: 25px 10px 0px 10px;
+    /* height: 25% !important; */
     /* border: 1px solid blue; */
 }
 
 .messageArea{
     /* border: 1px solid red; */
     padding: 10px;
-    height: 90%;
+    height: 68vh !important;
 }
 
 .chatArea{
@@ -46,7 +47,7 @@
 .messageDiv{
     background-color: #8f9090;
     border: 1px solid red;
-    height: 82vh !important;
+    height: 80vh !important;
     margin-top:10px !important;
 }
 
@@ -74,4 +75,24 @@
     border: 1px solid rgba(29, 14, 94, 0.284);
     margin-left:3px;
     cursor: pointer;
+}
+
+.spinner{
+    align-self: center !important;
+    width:50px !important;
+    height: 50px !important;
+    margin: 0 auto !important;
+
+}
+
+.spinnerContainer{
+    display: grid;
+    place-items: center;
+    height: 85vh;
+}
+
+.errorFormField {
+    color: red;
+    font-size: 14px;
+    padding: 5px 0px;
 }

@@ -1,7 +1,7 @@
 const asyncErrorHandler = require('../utils/asyncErrorHandler')
 const CustomError = require('../utils/CustomError')
 const chatModel = require("../models/chatModel");
-const Chat = require('../models/chatModel');
+// const Chat = require('../models/chatModel');
 
 const accessChat = asyncErrorHandler(async (req, res, next) => {
 
@@ -40,7 +40,7 @@ const accessChat = asyncErrorHandler(async (req, res, next) => {
         }
 
         const createChat = await chatModel.create(chatData);
-        const fullChat = await Chat.findById(createChat._id).populate("users", "-password");
+        const fullChat = await chatModel.findById(createChat._id).populate("users", "-password");
         
         res.status(201).json(fullChat)
 
@@ -50,9 +50,9 @@ const accessChat = asyncErrorHandler(async (req, res, next) => {
 
 const fetchAllChats = asyncErrorHandler(async (req, res, next) => {
 
-    const userId = req.params.id;
+    // const userId = req.params.id;
     const fetchChats = await chatModel.find({
-        users: {$elemMatch :{$eq: userId } }
+        users: {$elemMatch :{$eq: req.user._id } }
     })
     .populate({
         path: "users",
@@ -217,5 +217,9 @@ const removeMembers = asyncErrorHandler( async (req, res, next) => {
 
 })
 
-module.exports = {accessChat, fetchAllChats, createGroup, updateGroupName, addMembers, removeMembers};
+const deleteGroup = asyncErrorHandler(async(req, res, next) => {
+    const {chatId} = req.body;
+})
+
+module.exports = {accessChat, fetchAllChats, createGroup, updateGroupName, addMembers, removeMembers, deleteGroup};
 
