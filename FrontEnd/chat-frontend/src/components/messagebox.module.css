@@ -2,11 +2,14 @@
     border: 0.5px solid rgb(190, 190, 190) !important;
     padding: 5px 10px;
     width: 100%;
-    
+    margin-bottom:0px !important;
+    margin-top:35px !important;
 }
 
 .chatBox{
-    padding: 25px 10px 0px 10px;
+    padding: 40px 10px 0px 10px;
+    /* height:15vh !important; */
+    /* margin-bottom */
     /* height: 25% !important; */
     /* border: 1px solid blue; */
 }
@@ -46,8 +49,8 @@
 
 .messageDiv{
     background-color: #8f9090;
-    border: 1px solid red;
-    height: 80vh !important;
+    /* border: 1px solid red; */
+    height: 82vh !important;
     margin-top:10px !important;
 }
 

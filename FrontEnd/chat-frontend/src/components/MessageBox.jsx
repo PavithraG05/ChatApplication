@@ -5,11 +5,17 @@ import { getSender, getSenderDetails } from './getSender';
 import ProfileModal from './ProfileModal';
 import GroupModal from './GroupModal';
 import Messages from './Messages';
+import Lottie from 'react-lottie'
+import animationData from "../animation/typing.json";
 const URL = import.meta.env.VITE_APP_URL;
+
+const ENDPOINT = "http://localhost:5000";
+let socket, selectedChatCompare;
+import io from 'socket.io-client'
 
 function MessageBox({fetchAgain, setFetchAgain}) {
 
-    const {user, selectedChat} = ChatState();
+    const {user, selectedChat, notification, setNotification} = ChatState();
     const [profileModal, setProfileModal] = useState(false);
     // const [profileModal, setProfileModal] = useState();
     const [groupModal, setGroupModal] = useState(false);
@@ -17,10 +23,47 @@ function MessageBox({fetchAgain, setFetchAgain}) {
     const [loading, setLoading] = useState(false);
     const [newMessage, setNewMessage] = useState("");
     const [messageErr, setMessageErr] = useState("");
+    const [socketConnected, setSocketConnected] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
+    const [typing, setTyping] = useState(false);
    
     useEffect(()=>{
         fetchMessages();
+        selectedChatCompare = selectedChat;
     },[selectedChat])
+    
+    useEffect(() => {
+      socket = io(ENDPOINT);
+      socket.on("connected",()=>setSocketConnected(true));   
+      socket.emit("setup",user);
+      socket.on("typing",()=>setIsTyping(true))
+      socket.on("stop typing",()=>setIsTyping(false));
+    }, [])
+
+    useEffect(()=>{
+        socket.on("message recieved",(newMessageRecieved)=>{
+            if(!selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id){
+                if(!notification.includes(newMessageRecieved)){
+                    setNotification([newMessageRecieved,...notification]);
+                    setFetchAgain(!fetchAgain);
+                }
+            }
+            else{
+                setMessageList([...messageList, newMessageRecieved]);
+            }
+        })
+    })
+
+    console.log(notification)
+
+    const defaultOptions = {
+        loop: true,
+        autoplay: true,
+        animationData: animationData,
+        rendererSettings: {
+        preserveAspectRatio: "xMidYMid slice",
+        },
+    };
 
     const handleProfile=()=>{
         setProfileModal(true);
@@ -33,6 +76,7 @@ function MessageBox({fetchAgain, setFetchAgain}) {
 
     const sendMessage = async(event) => {
         if(event.key === "Enter" && newMessage){
+            socket.emit("stop typing",selectedChat._id);
             setLoading(true);
             try{
                 setNewMessage("");
@@ -55,9 +99,11 @@ function MessageBox({fetchAgain, setFetchAgain}) {
 
                 const data = await response.json();
                 setLoading(false);
+                socket.emit("new message",data);
                 setMessageList([...messageList, data]);
                 console.log(data);
                 setMessageErr("")
+               
             }
             catch(err){
                 console.log(String(err));
@@ -67,9 +113,26 @@ function MessageBox({fetchAgain, setFetchAgain}) {
         }
     }
 
+    
+
     const typingHandler = (e) => {
        setNewMessage(e.target.value);
+        if (!socketConnected) return;
 
+        if (!typing) {
+            setTyping(true);
+            socket.emit("typing", selectedChat._id);
+        }
+        let lastTypingTime = new Date().getTime();
+        var timerLength = 3000;
+        setTimeout(() => {
+            var timeNow = new Date().getTime();
+            var timeDiff = timeNow - lastTypingTime;
+            if (timeDiff >= timerLength && typing) {
+                socket.emit("stop typing", selectedChat._id);
+                setTyping(false);
+            }
+        }, timerLength);
     }
 
     const fetchMessages = async() => {
@@ -96,7 +159,7 @@ function MessageBox({fetchAgain, setFetchAgain}) {
             console.log(data);
             setLoading(false);
             setMessageList(data);
-
+            socket.emit("join chat",selectedChat._id);
         }
         catch(err){
             console.log(String(err));
@@ -117,12 +180,25 @@ function MessageBox({fetchAgain, setFetchAgain}) {
                 </div>
                 <div className={`${styles.messageDiv}`}>
                     {loading && <div className={`${styles.spinnerContainer}`}><div className={`spinner-border spinner-border-xl ${styles.spinner}`} role="status" aria-hidden="true"></div></div>}
-                    {!loading && <><div className={`${styles.messageArea}`}>
-                        <div className={`border `} ><Messages messageList={messageList}/></div>
+                    {!loading && <>
+                    <div className={`${styles.messageArea} overflow-y-scroll`}>
+                        <div className={` `} ><Messages messageList={messageList}/></div>
                     </div>
                     <div className={`${styles.chatBox} rounded-1`}>
-                        <form onKeyDown={sendMessage}><input type="text" placeholder='Enter a message...' className={`${styles.chatTextBox} rounded-2`} value={newMessage} onChange={typingHandler}/></form>
+                        {isTyping ? (
+                            <div>
+                                <Lottie
+                                    options={defaultOptions}
+                                    // height={50}
+                                    width={60}
+                                    style={{ marginBottom: 15, marginLeft: 0 }}
+                                />
+                            </div>
+                            ) : (<></>)
+                        }
                         {messageErr && <div className={`${styles.errorFormField}`}>{messageErr}</div>}
+                        <form onKeyDown={sendMessage}><input type="text" placeholder='Enter a message...' className={`${styles.chatTextBox} rounded-2`} value={newMessage} onChange={typingHandler}/></form>
+                        
                     </div></>}
                     
                 </div>

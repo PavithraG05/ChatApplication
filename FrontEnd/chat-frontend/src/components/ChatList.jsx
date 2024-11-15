@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styles from './chatlist.module.css'
 import { ChatState } from './context/ChatProvider';
 import StackLoader from './StackLoader';
-import { getSender } from './getSender';
+import { getSender, getSenderDetails } from './getSender';
 import CreateGroup from './CreateGroup';
 const URL = import.meta.env.VITE_APP_URL
 
@@ -78,7 +78,7 @@ function ChatList({fetchAgain}) {
     const handleSelectedChat=(chat)=>{
         setSelectedChat(chat);
     }
-
+    console.log(chatList);
   return (
     <div className={`border bg-light`}>
         <div className={`container py-3 ${styles.chatContainer}`}>
@@ -100,8 +100,12 @@ function ChatList({fetchAgain}) {
                     <div key={chat._id} className={`${styles.cardList}`}>
                         <div className={`card border border-danger rounded-1 ${styles.cardone} ${chat === selectedChat?`text-red ${styles.cardBg}`:""}`} onClick={()=>handleSelectedChat(chat)}>
                             <div className={`card-body ${styles.cardBody}`}>
-                                <p className={`card-title ${styles.cardTitle}`}>{!chat.isGroupChat? getSender(loggedUser, chat.users):chat.chatName}</p>
-                                {chat.latestMessage && <p className={`card-subtitle text-body-secondary ${styles.cardsubTitle}`}></p>}
+                                <div className={`d-flex`}>
+                                    <img src={!chat.isGroupChat? getSenderDetails(loggedUser, chat.users).profile : `grp.jpg`} className={`${styles.avatar}`}/>&nbsp;
+                                    <p className={`card-title ${styles.cardTitle}`}>{!chat.isGroupChat? getSender(loggedUser, chat.users):chat.chatName}</p>
+                                </div>
+                                {/* <p className={`card-title ${styles.cardTitle}`}>{!chat.isGroupChat? getSender(loggedUser, chat.users):chat.chatName}</p> */}
+                                {/* {chat.latestMessage && <p className={`card-subtitle text-body-secondary ${styles.cardsubTitle}`}><b>{chat.latestMessage.sender.name}: </b>{chat.latestMessage.content.length > 50 ? chat.latestMessage.content.substring(0,40)+"...":chat.latestMessage.content}</p>} */}
                             </div>
                         </div>
                     </div>

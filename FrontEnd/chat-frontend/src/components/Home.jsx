@@ -27,10 +27,10 @@ function Home() {
       <div className={`${styles.loginContainer} rounded-1`}>
         <ul className={`nav nav-pills nav-justified ${styles.container}`}>
           <li className="nav-item">
-            <button className={`nav-link ${tab ? 'text-black':`active ${styles.bgColor}`}`} aria-current="page" onClick={()=>setTab(!tab)}>Login</button>
+            <button className={`nav-link ${tab ? `text-black  `:`active ${styles.bgColor}`}`} aria-current="page" onClick={()=>setTab(!tab)}>Login</button>
           </li>
           <li className="nav-item">
-            <button className={`nav-link ${tab ?`active ${styles.bgColor}`:'text-black'}`}  onClick={()=>setTab(!tab)}>Register</button>
+            <button className={`nav-link ${tab ?`active ${styles.bgColor}`:`text-black`}`}  onClick={()=>setTab(!tab)}>Register</button>
           </li>
         </ul>
 

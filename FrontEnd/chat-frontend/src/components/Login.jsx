@@ -137,7 +137,7 @@ function Login() {
             </button>
             {error.loginErr && <div className={`${styles.errorFormField}`}>{error.loginErr}</div>}
           </div>
-          <div className={`${styles.registerLink} p-1`}>New User? <a href="#">Register Now</a></div>
+          {/* <div className={`${styles.registerLink} p-1`}>New User? <a href="#">Register Now</a></div> */}
         </form>
         </>
     // </div>

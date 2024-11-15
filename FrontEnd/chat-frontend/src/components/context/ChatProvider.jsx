@@ -11,6 +11,7 @@ export const ChatProvider = ({children}) => {
     const [selectedChat, setSelectedChat] = useState();
     const [toast, setToast] = useState(false);
     const [admin, setAdmin] = useState(false);
+    const [notification, setNotification] = useState([]);
     // const [profileModal, setProfileModal] = useState(false);
 
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ export const ChatProvider = ({children}) => {
     },[navigate])
 
     return(
-        <ChatContext.Provider value={{user, setUser, chatList, setChatList,selectedChat, setSelectedChat, toast, setToast, admin, setAdmin}}>
+        <ChatContext.Provider value={{user, setUser, chatList, setChatList,selectedChat, setSelectedChat, toast, setToast, admin, setAdmin, notification, setNotification}}>
             {children}
         </ChatContext.Provider>
     )

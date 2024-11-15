@@ -60,3 +60,12 @@
     padding-bottom: 6px !important;
 }
 
+.notifList{
+    padding:3px;
+    cursor: pointer
+}
+
+.notifList:hover{
+    opacity:0.7;
+}
+

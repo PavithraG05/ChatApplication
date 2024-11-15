@@ -220,7 +220,7 @@ function Register() {
                 {error.confirmPasswordErr && <div className={`${styles.errorFormField}`}>{error.confirmPasswordErr}</div>}
             </div>
             <div className ="form-group p-2">
-                <label className="form-label">Upload Profile Photo*</label>
+                <label className="form-label">Upload Profile Photo</label>
                 <input className={error.profileErr?`${styles.fieldBorderColor} form-control form-control-md`:`form-control form-control-md`} type="file"  name="profile" onChange={(e)=>handleProfile(e.target.files[0])}/>
                 {error.profileErr && <div className={`${styles.errorFormField}`}>{error.profileErr}</div>}
             </div>
@@ -236,7 +236,7 @@ function Register() {
                 </button>
                 {error.registrationErr && <div className={`${styles.errorFormField}`}>{error.registrationErr}</div>}
             </div>
-            <div className={`${styles.loginLink} p-1`}>Existing User? <a href="#">Login</a></div>
+            {/* <div className={`${styles.loginLink} p-1`}>Existing User? <a href="#">Login</a></div> */}
         </form>
     </>
   )
